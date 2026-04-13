@@ -401,7 +401,11 @@ function App() {
 
     try {
       const sentViaSupabase = await submitViaSupabase(formData)
-      const sentViaFormSubmit = sentViaSupabase ? false : await submitViaFormSubmit(formData)
+      const sentViaFormSubmit = sentViaSupabase ? true : await submitViaFormSubmit(formData)
+
+      if (sentViaSupabase && contactEmail) {
+        void submitViaFormSubmit(formData)
+      }
 
       if (!sentViaSupabase && !sentViaFormSubmit) {
         throw new Error('submit-failed')
