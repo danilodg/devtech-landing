@@ -47,6 +47,7 @@ jobs:
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           VITE_SUPABASE_CONTACT_FUNCTION: ${{ secrets.VITE_SUPABASE_CONTACT_FUNCTION }}
           VITE_CONTACT_EMAIL: ${{ secrets.VITE_CONTACT_EMAIL }}
+          VITE_FORMSUBMIT_TOKEN: ${{ secrets.VITE_FORMSUBMIT_TOKEN }}
         run: npm run build
 
       - name: Deploy to gh-pages branch

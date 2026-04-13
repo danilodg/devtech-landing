@@ -12,6 +12,7 @@ type FormStatus = { type: 'idle' | 'success' | 'error'; message: string }
 const LANGUAGE_STORAGE_KEY = 'devtech:language'
 const THEME_STORAGE_KEY = 'devtech:theme'
 const contactEmail = import.meta.env.VITE_CONTACT_EMAIL?.trim() || ''
+const formSubmitToken = import.meta.env.VITE_FORMSUBMIT_TOKEN?.trim()
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim()
 const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim() || import.meta.env.VITE_SUPABASE_ANON_KEY?.trim()
 const supabaseContactFunction = import.meta.env.VITE_SUPABASE_CONTACT_FUNCTION?.trim() || 'contact-lead'
@@ -373,9 +374,15 @@ function App() {
   }
 
   async function submitViaFormSubmit(formData: FormData) {
-    if (!contactEmail) return false
+    const formSubmitEndpoint = formSubmitToken
+      ? `https://formsubmit.co/ajax/${formSubmitToken}`
+      : contactEmail
+        ? `https://formsubmit.co/ajax/${contactEmail}`
+        : ''
 
-    const response = await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
+    if (!formSubmitEndpoint) return false
+
+    const response = await fetch(formSubmitEndpoint, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -403,7 +410,7 @@ function App() {
       const sentViaSupabase = await submitViaSupabase(formData)
       const sentViaFormSubmit = sentViaSupabase ? true : await submitViaFormSubmit(formData)
 
-      if (sentViaSupabase && contactEmail) {
+      if (sentViaSupabase && (contactEmail || formSubmitToken)) {
         void submitViaFormSubmit(formData)
       }
 
